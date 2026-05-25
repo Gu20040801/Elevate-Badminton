@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="active">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings">Bookings</a>
+            <a href="/shop">Shop</a>
+            <a href="/locations">Locations</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+
+<div class="slider">
+
+<img src="{{ url_for('static', filename='hero1.jpg') }}"
+class="slide active">
+
+<img src="{{ url_for('static', filename='hero2.jpg') }}"
+class="slide">
+
+<img src="{{ url_for('static', filename='hero3.jpg') }}"
+class="slide">
+
+</div>
+
+<div class="hero-overlay">
+
+<h2 id="hero-title">
+TRAIN SMART.
+PLAY ELEVATED.
+</h2>
+
+<p id="hero-sub">
+
+Professional badminton training in Vancouver
+
+</p>
+
+<button id="hero-btn">
+
+BOOK TRAINING
+
+</button>
+
+</div>
+
+<button class="left">
+←
+</button>
+
+<button class="right">
+→
+</button>
+
+</section>
+
+<script>
+
+const slides=document.querySelectorAll(".slide")
+
+const titles=[
+
+"TRAIN SMART.<br>PLAY ELEVATED.",
+
+"PUSH YOUR LIMITS.",
+
+"BUILD YOUR GAME."
+
+]
+
+const subtitles=[
+
+"Professional badminton training in Vancouver",
+
+"Train with intensity and confidence",
+
+"Structured coaching for every level"
+
+]
+
+const buttons=[
+
+"BOOK TRAINING",
+
+"VIEW PROGRAMS",
+
+"VIEW LOCATIONS"
+
+]
+
+const links=[
+
+"/bookings",
+
+"/programs",
+
+"/locations"
+
+]
+
+let current=0
+
+const title=document.getElementById("hero-title")
+
+const sub=document.getElementById("hero-sub")
+
+const btn=document.getElementById("hero-btn")
+
+function updateHero(){
+
+slides.forEach(
+slide=>
+slide.classList.remove("active")
+)
+
+slides[current]
+.classList.add("active")
+
+title.innerHTML=titles[current]
+
+sub.innerHTML=subtitles[current]
+
+btn.innerHTML=buttons[current]
+
+btn.onclick=
+()=>{
+
+window.location.href=
+links[current]
+
+}
+
+}
+
+function show(index){
+
+current=
+(index+slides.length)
+%
+slides.length
+
+updateHero()
+
+}
+
+document
+.querySelector(".left")
+.onclick=
+()=>show(current-1)
+
+document
+.querySelector(".right")
+.onclick=
+()=>show(current+1)
+
+updateHero()
+
+setInterval(
+()=>{
+show(current+1)
+},
+5000
+)
+
+</script>
+</body>
+</html>

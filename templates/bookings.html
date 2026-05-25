@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings | Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings" class="active">Bookings</a>
+            <a href="/shop">Shop</a>
+            <a href="/locations">Locations</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="bookings-page">
+        <section class="booking-inquiry">
+            <div class="booking-heading">
+                <p class="program-label">Bookings</p>
+                <h1>Training Inquiry</h1>
+            </div>
+
+            {% if booking_status == "sent" %}
+                <p class="booking-feedback booking-success">
+                    Thanks. Your inquiry has been sent to Elevate Badminton.
+                    {% if booking_reference %}
+                        Reference: {{ booking_reference }}.
+                    {% endif %}
+                </p>
+            {% elif booking_error %}
+                <p class="booking-feedback booking-error">
+                    {{ booking_error }}
+                </p>
+            {% endif %}
+
+            <form class="booking-form" method="post" action="/bookings">
+                <div class="booking-fields">
+                    <label class="booking-field">
+                        <span>First Name *</span>
+                        <input
+                            type="text"
+                            name="first_name"
+                            placeholder="First Name"
+                            value="{{ booking_values.get('first_name', '') }}"
+                            required
+                        >
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Last Name</span>
+                        <input
+                            type="text"
+                            name="last_name"
+                            placeholder="Last Name"
+                            value="{{ booking_values.get('last_name', '') }}"
+                        >
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Email *</span>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value="{{ booking_values.get('email', '') }}"
+                            required
+                        >
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Phone *</span>
+                        <span class="booking-phone">
+                            <span class="booking-phone-prefix">+1 CA</span>
+                            <input
+                                id="booking-phone"
+                                type="tel"
+                                name="phone_display"
+                                placeholder="(604) 555-0123"
+                                inputmode="tel"
+                                autocomplete="tel-national"
+                                pattern="\(\d{3}\) \d{3}-\d{4}"
+                                title="Enter a 10-digit Canadian phone number."
+                                value="{{ booking_values.get('phone_display', '') }}"
+                                required
+                            >
+                            <input
+                                id="booking-phone-value"
+                                type="hidden"
+                                name="phone"
+                                value="{{ booking_values.get('phone', '') }}"
+                            >
+                        </span>
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Lesson Type *</span>
+                        <select name="lesson_type" required>
+                            <option value="">Select lesson type</option>
+                            <option value="Private Lessons" {% if booking_values.get('lesson_type') == 'Private Lessons' %}selected{% endif %}>Private Lessons</option>
+                            <option value="Sparring" {% if booking_values.get('lesson_type') == 'Sparring' %}selected{% endif %}>Sparring</option>
+                        </select>
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Preferred Location *</span>
+                        <select name="preferred_location" required>
+                            <option value="">Select location</option>
+                            <option value="Badminton Vancouver" {% if booking_values.get('preferred_location') == 'Badminton Vancouver' %}selected{% endif %}>Badminton Vancouver</option>
+                            <option value="CoSports" {% if booking_values.get('preferred_location') == 'CoSports' %}selected{% endif %}>CoSports</option>
+                            <option value="Flexible" {% if booking_values.get('preferred_location') == 'Flexible' %}selected{% endif %}>Flexible</option>
+                        </select>
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Preferred Date *</span>
+                        <input
+                            id="preferred-date"
+                            type="date"
+                            name="preferred_date"
+                            value="{{ booking_values.get('preferred_date', '') }}"
+                            required
+                        >
+                    </label>
+
+                    <label class="booking-field">
+                        <span>Preferred Time *</span>
+                        <input
+                            type="text"
+                            name="preferred_time"
+                            placeholder="Example: Saturday afternoon or 6:00 PM"
+                            value="{{ booking_values.get('preferred_time', '') }}"
+                            required
+                        >
+                    </label>
+
+                    <label class="booking-field booking-message">
+                        <span>Player Level</span>
+                        <input
+                            type="text"
+                            name="player_level"
+                            placeholder="Beginner, intermediate, competitive, or unsure"
+                            value="{{ booking_values.get('player_level', '') }}"
+                        >
+                    </label>
+
+                    <label class="booking-field booking-message">
+                        <span>Message *</span>
+                        <textarea
+                            name="message"
+                            placeholder="Tell us your goals, age if relevant, and any schedule details we should know."
+                            required
+                        >{{ booking_values.get('message', '') }}</textarea>
+                    </label>
+
+                    <label class="booking-trap" aria-hidden="true">
+                        <span>Leave this field empty</span>
+                        <input type="text" name="website" tabindex="-1" autocomplete="off">
+                    </label>
+                </div>
+
+                <div class="booking-actions">
+                    <button type="submit" class="booking-submit">Inquire Now</button>
+                    <p class="booking-reply-note">
+                        * Preferred times are reviewed first. Your slot is confirmed after coach availability, court booking, and payment are confirmed.
+                    </p>
+                </div>
+            </form>
+        </section>
+
+        <section class="lesson-policy">
+            <p class="program-label">Before You Book</p>
+            <h2>Lesson Policy</h2>
+
+            <ul>
+                <li>Your preferred time is an inquiry, not a confirmed booking.</li>
+                <li>Lesson availability is confirmed after the coach, court time, and payment are arranged.</li>
+                <li>Unpaid lesson times are not reserved unless another arrangement is confirmed by Elevate Badminton.</li>
+                <li>Cancellations or rescheduling requests should be made at least 72 hours before the lesson time.</li>
+                <li>No-shows and late cancellations may lose their deposit or lesson payment.</li>
+                <li>Players should arrive ready to train and notify the coach as early as possible about schedule changes.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const bookingPhone = document.getElementById("booking-phone");
+        const bookingPhoneValue = document.getElementById("booking-phone-value");
+        const preferredDate = document.getElementById("preferred-date");
+
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        preferredDate.min = tomorrow.toISOString().split("T")[0];
+
+        function formatCanadianPhone(value) {
+            let digits = value.replace(/\D/g, "");
+
+            if (digits.length === 11 && digits.startsWith("1")) {
+                digits = digits.slice(1);
+            }
+
+            digits = digits.slice(0, 10);
+            bookingPhoneValue.value = digits.length === 10 ? `+1${digits}` : "";
+
+            if (digits.length < 4) {
+                return digits;
+            }
+
+            if (digits.length < 7) {
+                return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+            }
+
+            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+        }
+
+        bookingPhone.addEventListener("input", () => {
+            bookingPhone.value = formatCanadianPhone(bookingPhone.value);
+            bookingPhone.setCustomValidity("");
+        });
+
+        bookingPhone.addEventListener("invalid", () => {
+            bookingPhone.setCustomValidity("Enter a 10-digit Canadian phone number with area code.");
+        });
+    </script>
+
+</body>
+</html>

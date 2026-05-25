@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings">Bookings</a>
+            <a href="/shop">Shop</a>
+            <a href="/locations">Locations</a>
+            <a href="/contact" class="active">Contact</a>
+        </div>
+    </nav>
+
+    <main class="contact-page">
+        <section class="contact-layout">
+            <section class="wechat-contact">
+                <div class="wechat-heading">
+                    <h3>WeChat</h3>
+             
+                    <p>Scan the QR code to message Elevate Badminton on WeChat.</p>
+                </div>
+
+                <img
+                    class="wechat-qr"
+                    src="{{ url_for('static', filename='wechat-qr.JPG') }}"
+                    alt="Elevate Badminton WeChat QR code"
+                >
+            </section>
+
+            <section class="contact-message">
+                <div class="contact-form-heading">
+                    <h2>Send A Message</h2>
+                    <p>We will reply within 24 hours.</p>
+                </div>
+
+                {% if contact_status == "sent" %}
+                    <p class="booking-feedback booking-success">
+                        Thanks. Your message has been sent to Elevate Badminton.
+                    </p>
+                {% elif contact_error %}
+                    <p class="booking-feedback booking-error">
+                        {{ contact_error }}
+                    </p>
+                {% endif %}
+
+                <form class="booking-form contact-form" method="post" action="/contact">
+                    <div class="booking-fields contact-fields">
+                        <label class="booking-field contact-full">
+                            <span>Name *</span>
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Your Name"
+                                value="{{ contact_values.get('name', '') }}"
+                                required
+                            >
+                        </label>
+
+                        <label class="booking-field">
+                            <span>Email *</span>
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value="{{ contact_values.get('email', '') }}"
+                                required
+                            >
+                        </label>
+
+                        <label class="booking-field">
+                            <span>Phone</span>
+                            <span class="booking-phone">
+                                <span class="booking-phone-prefix">+1 CA</span>
+                                <input
+                                    id="contact-phone"
+                                    type="tel"
+                                    name="phone_display"
+                                    placeholder="(604) 555-0123"
+                                    inputmode="tel"
+                                    autocomplete="tel-national"
+                                    pattern="\(\d{3}\) \d{3}-\d{4}"
+                                    title="Enter a 10-digit Canadian phone number."
+                                    value="{{ contact_values.get('phone_display', '') }}"
+                                >
+                                <input
+                                    id="contact-phone-value"
+                                    type="hidden"
+                                    name="phone"
+                                    value="{{ contact_values.get('phone', '') }}"
+                                >
+                            </span>
+                        </label>
+
+                        <label class="booking-field booking-message">
+                            <span>Message *</span>
+                            <textarea
+                                name="message"
+                                placeholder="How can we help?"
+                                required
+                            >{{ contact_values.get('message', '') }}</textarea>
+                        </label>
+
+                        <label class="booking-trap" aria-hidden="true">
+                            <span>Leave this field empty</span>
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </label>
+                    </div>
+
+                    <div class="booking-actions">
+                        <button type="submit" class="booking-submit">Send Message</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const contactPhone = document.getElementById("contact-phone");
+        const contactPhoneValue = document.getElementById("contact-phone-value");
+
+        function formatContactPhone(value) {
+            let digits = value.replace(/\D/g, "");
+
+            if (digits.length === 11 && digits.startsWith("1")) {
+                digits = digits.slice(1);
+            }
+
+            digits = digits.slice(0, 10);
+            contactPhoneValue.value = digits.length === 10 ? `+1${digits}` : "";
+
+            if (digits.length < 4) {
+                return digits;
+            }
+
+            if (digits.length < 7) {
+                return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+            }
+
+            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+        }
+
+        contactPhone.addEventListener("input", () => {
+            contactPhone.value = formatContactPhone(contactPhone.value);
+            contactPhone.setCustomValidity("");
+        });
+
+        contactPhone.addEventListener("invalid", () => {
+            contactPhone.setCustomValidity("Enter a 10-digit Canadian phone number with area code.");
+        });
+    </script>
+
+</body>
+</html>

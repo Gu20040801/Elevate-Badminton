@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locations | Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings">Bookings</a>
+            <a href="/shop">Shop</a>
+            <a href="/locations" class="active">Locations</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="locations-page">
+        <header class="locations-heading">
+            <p class="program-label">Locations</p>
+            <h1>Training Venues</h1>
+        </header>
+
+        <section class="locations-grid">
+            <article class="location-card">
+                <img
+                    src="{{ url_for('static', filename='badminton_vancouver.png') }}"
+                    alt="Badminton Vancouver venue"
+                >
+
+                <div class="location-details">
+                    <h2>Badminton Vancouver</h2>
+                    <p class="location-city">Vancouver</p>
+                    <address>13100 Mitchell Road, Richmond, BC V6V 1M8</address>
+                </div>
+            </article>
+
+            <article class="location-card">
+                <img
+                    src="{{ url_for('static', filename='cosports.png') }}"
+                    alt="CoSports badminton venue"
+                >
+
+                <div class="location-details">
+                    <h2>CoSports</h2>
+                    <p class="location-city">Port Coquitlam</p>
+                    <address>921 Seaborne Avenue, Port Coquitlam, BC V3B 0N9</address>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+</body>
+</html>

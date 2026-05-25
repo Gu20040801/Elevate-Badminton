@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programs | Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title active">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings">Bookings</a>
+            <a href="/shop">Shop</a>
+            <a href="/locations">Locations</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <section class="programs-hero">
+        <div class="programs-hero-copy">
+            <p class="programs-kicker">Elevate Programs</p>
+            <h1>Train With Purpose</h1>
+            <p>Structured badminton lessons built around clear coaching, purposeful repetition, and confident play.</p>
+        </div>
+    </section>
+
+    <section class="programs-page">
+
+        <div class="program-section" id="private-lessons">
+            <div class="program-media">
+                <video autoplay loop muted playsinline controls preload="metadata">
+                    <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="program-text">
+                <p class="program-label">Private Lessons</p>
+                <h2>Personal Coaching. Clear Progress.</h2>
+                <p>
+                    Private lessons provide focused one-on-one coaching based on each
+                    player's goals, level, and weaknesses. Training can focus on technique,
+                    movement, tactics, consistency, or competitive preparation.
+                </p>
+
+                <div class="program-actions">
+                    <a href="/bookings" class="program-btn">Book Private Training</a>
+
+                    <button
+                        class="program-btn rate-btn"
+                        data-pdf="{{ url_for('static', filename='private-lesson-rates.JPG') }}"
+                    >
+                        View Rates
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="program-section" id="sparring">
+            <div class="program-media">
+                <video autoplay loop muted playsinline controls preload="metadata">
+                    <source src="{{ url_for('static', filename='sparring.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="program-text">
+                <p class="program-label">Sparring</p>
+                <h2>Play. Adjust. Compete Smarter.</h2>
+                <p>
+                    Sparring training lets players simulate real game situations
+                    with a coach on court. Through guided rallies and competitive
+                    points, players learn tactical patterns, shot selection, court
+                    positioning, and how to make better decisions under pressure.
+                </p>
+
+                <div class="program-actions">
+                    <a href="/bookings" class="program-btn">Book Sparring</a>
+
+                    <button
+                        class="program-btn rate-btn"
+                        data-pdf="{{ url_for('static', filename='sparring-lesson-rates.JPG') }}"
+                    >
+                        View Rates
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="pdf-modal" id="pdf-modal">
+    <div class="pdf-modal-content">
+        <button class="pdf-close" id="pdf-close" aria-label="Close rates PDF">
+            ×
+        </button>
+
+        <img
+            id="rate-image"
+            class="rate-image"
+            src=""
+            alt="Lesson rates"
+        >
+    </div>
+</div>
+
+<script>
+    const pdfModal = document.getElementById("pdf-modal");
+    const pdfModalContent = document.querySelector(".pdf-modal-content");
+    const rateImage = document.getElementById("rate-image");
+    const pdfClose = document.getElementById("pdf-close");
+    const rateButtons = document.querySelectorAll(".rate-btn");
+
+    rateButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            rateImage.src = button.dataset.pdf;
+            rateImage.alt = `${button.closest(".program-section").querySelector(".program-label").textContent} rates`;
+            pdfModal.classList.add("open");
+            document.body.classList.add("modal-open");
+        });
+    });
+
+    function closePdfModal() {
+        pdfModal.classList.remove("open");
+        pdfModalContent.classList.remove("portrait-rate");
+        rateImage.src = "";
+        document.body.classList.remove("modal-open");
+    }
+
+    rateImage.addEventListener("load", () => {
+        pdfModalContent.classList.toggle(
+            "portrait-rate",
+            rateImage.naturalHeight > rateImage.naturalWidth
+        );
+    });
+
+    pdfClose.addEventListener("click", closePdfModal);
+
+    pdfModal.addEventListener("click", event => {
+        if (event.target === pdfModal) {
+            closePdfModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closePdfModal();
+        }
+    });
+</script>
+
+</body>
+</html>

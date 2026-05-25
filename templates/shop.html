@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | Elevate Badminton Academy</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo">
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+
+            <div class="dropdown">
+                <a href="/programs" class="dropdown-title">Programs ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/programs#private-lessons">Private Lessons</a>
+                    <a href="/programs#sparring">Sparring</a>
+                </div>
+            </div>
+
+            <a href="/bookings">Bookings</a>
+            <a href="/shop" class="active">Shop</a>
+            <a href="/locations">Locations</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+
+    <main class="shop-page">
+        <header class="shop-heading">
+            <h1>Shop</h1>
+            <p>Badminton gear and training essentials. Message us to confirm availability before pickup.</p>
+        </header>
+
+        <section class="shop-grid">
+            {% for item in shop_items %}
+                <article class="shop-card">
+                    <div class="shop-card-media">
+                        <img
+                            src="{{ url_for('static', filename=item.image) }}"
+                            alt="{{ item.name }}"
+                        >
+                    </div>
+
+                    <div class="shop-card-copy">
+                        <h2>{{ item.name }}</h2>
+                        <p class="shop-price">{{ item.price }}</p>
+                        <a
+                            class="shop-order"
+                            href="/contact?product={{ item.name | urlencode }}"
+                        >
+                            Ask to Order
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    </main>
+
+</body>
+</html>
