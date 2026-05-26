@@ -32,6 +32,7 @@ def load_local_env():
 load_local_env()
 
 BOOKING_INBOX = "elevatebadminton99@gmail.com"
+SMTP_TIMEOUT_SECONDS = int(os.environ.get("SMTP_TIMEOUT_SECONDS", "8"))
 BOOKING_RECORDS_PATH = Path(
     os.environ.get("BOOKING_RECORDS_PATH", Path(app.instance_path) / "bookings.csv")
 )
@@ -156,7 +157,7 @@ def send_email(subject, to_address, reply_to, body):
     message["Reply-To"] = reply_to
     message.set_content(body)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=SMTP_TIMEOUT_SECONDS) as smtp:
         smtp.login(gmail_user, gmail_app_password)
         smtp.send_message(message)
 
