@@ -20,6 +20,11 @@ nav{
     z-index:1000;
 }
 
+.nav-toggle,
+.nav-menu-button{
+    display:none;
+}
+
 .nav-links{
     display:flex;
     align-items:center;
@@ -986,23 +991,148 @@ body.modal-open{
 
 @media (max-width:900px){
     nav{
-        gap:22px;
-        padding:16px 20px;
+        justify-content:space-between;
+        gap:18px;
+        padding:14px 18px;
     }
 
     .brand img{
-        height:58px;
+        height:54px;
+    }
+
+    .nav-menu-button{
+        width:46px;
+        height:46px;
+        display:grid;
+        place-content:center;
+        gap:6px;
+        border:1px solid rgba(242,201,76,0.45);
+        border-radius:8px;
+        background:#0d0d0d;
+        cursor:pointer;
+    }
+
+    .nav-menu-button span{
+        display:block;
+        width:22px;
+        height:2px;
+        background:white;
+        transition:transform 0.25s, opacity 0.25s;
     }
 
     .nav-links{
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:14px 0;
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        display:none;
+        flex-direction:column;
+        align-items:stretch;
+        gap:0;
+        padding:10px 18px 18px;
+        border-bottom:1px solid rgba(242,201,76,0.28);
+        background:rgba(0,0,0,0.97);
+        box-shadow:0 26px 60px rgba(0,0,0,0.45);
     }
 
-    .nav-links a{
-        margin-left:18px;
+    .nav-toggle:checked ~ .nav-menu-button span:nth-child(1){
+        transform:translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle:checked ~ .nav-menu-button span:nth-child(2){
+        opacity:0;
+    }
+
+    .nav-toggle:checked ~ .nav-menu-button span:nth-child(3){
+        transform:translateY(-8px) rotate(-45deg);
+    }
+
+    .nav-toggle:checked ~ .nav-links{
+        display:flex;
+    }
+
+    .nav-links a,
+    .dropdown-title{
+        margin:0;
+        padding:15px 4px;
+        border-bottom:1px solid rgba(255,255,255,0.1);
+        font-size:14px;
+        text-align:left;
+    }
+
+    .dropdown{
+        display:grid;
+    }
+
+    .dropdown-menu{
+        position:static;
+        display:grid;
+        width:auto;
+        margin:0 0 8px 14px;
+        border:0;
+        border-radius:0;
+        background:transparent;
+        box-shadow:none;
+    }
+
+    .dropdown-menu a{
+        padding:10px 4px;
+        color:#d7d7d7;
         font-size:13px;
+    }
+
+    .dropdown:hover .dropdown-menu{
+        display:grid;
+    }
+
+    .hero{
+        min-height:640px;
+        height:calc(100svh - 83px);
+    }
+
+    .hero::after{
+        background:linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.82) 78%);
+    }
+
+    .hero-overlay{
+        left:24px;
+        right:24px;
+        bottom:82px;
+        max-width:none;
+    }
+
+    .hero-overlay h2{
+        font-size:clamp(44px, 13vw, 68px);
+        line-height:1;
+        margin-bottom:18px;
+    }
+
+    .hero-overlay p{
+        max-width:420px;
+        font-size:18px;
+        margin-bottom:22px;
+    }
+
+    #hero-btn{
+        min-height:50px;
+        padding:0 24px;
+    }
+
+    .left,
+    .right{
+        top:auto;
+        bottom:22px;
+        width:46px;
+        height:46px;
+        font-size:22px;
+    }
+
+    .left{
+        left:24px;
+    }
+
+    .right{
+        right:24px;
     }
 
     .programs-hero{
@@ -1086,6 +1216,10 @@ body.modal-open{
         min-height:220px;
     }
 
+    .booking-actions{
+        align-items:stretch;
+    }
+
     .lesson-policy{
         padding-top:64px;
     }
@@ -1138,6 +1272,37 @@ body.modal-open{
 }
 
 @media (max-width:560px){
+    nav{
+        padding:12px 14px;
+    }
+
+    .brand img{
+        height:48px;
+    }
+
+    .hero{
+        min-height:560px;
+        height:calc(100svh - 73px);
+    }
+
+    .hero-overlay{
+        left:18px;
+        right:18px;
+        bottom:78px;
+    }
+
+    .hero-overlay h2{
+        font-size:clamp(40px, 15vw, 56px);
+    }
+
+    .hero-overlay p{
+        font-size:16px;
+    }
+
+    #hero-btn{
+        width:100%;
+    }
+
     .programs-hero h1{
         font-size:40px;
     }
@@ -1164,8 +1329,31 @@ body.modal-open{
         gap:14px;
     }
 
+    .booking-reply-note{
+        font-size:16px;
+    }
+
+    .booking-phone{
+        grid-template-columns:1fr;
+    }
+
+    .booking-phone .booking-phone-prefix{
+        min-height:42px;
+        justify-content:center;
+        border-right:0;
+        border-bottom:1px solid rgba(5,5,5,0.15);
+    }
+
     .contact-message{
         padding:24px 18px;
+    }
+
+    .shop-card-copy{
+        padding:16px;
+    }
+
+    .shop-order{
+        width:100%;
     }
 
     .location-details{
