@@ -174,6 +174,7 @@ def send_resend_email(subject, to_address, reply_to, body, api_key):
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
+            "User-Agent": "elevate-badminton/1.0",
         },
         method="POST",
     )
