@@ -127,6 +127,13 @@
                             <span>Leave this field empty</span>
                             <input type="text" name="website" tabindex="-1" autocomplete="off">
                         </label>
+
+                        <input
+                            type="hidden"
+                            name="form_rendered_at"
+                            class="form-rendered-at"
+                            value=""
+                        >
                     </div>
 
                     <div class="booking-actions">
@@ -140,6 +147,9 @@
     <script>
         const contactPhone = document.getElementById("contact-phone");
         const contactPhoneValue = document.getElementById("contact-phone-value");
+        const formRenderedAt = document.querySelector(".form-rendered-at");
+
+        formRenderedAt.value = `${Date.now() / 1000}`;
 
         function formatContactPhone(value) {
             let digits = value.replace(/\D/g, "");

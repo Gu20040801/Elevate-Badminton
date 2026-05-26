@@ -177,6 +177,13 @@
                         <span>Leave this field empty</span>
                         <input type="text" name="website" tabindex="-1" autocomplete="off">
                     </label>
+
+                    <input
+                        type="hidden"
+                        name="form_rendered_at"
+                        class="form-rendered-at"
+                        value=""
+                    >
                 </div>
 
                 <div class="booking-actions">
@@ -207,10 +214,12 @@
         const bookingPhone = document.getElementById("booking-phone");
         const bookingPhoneValue = document.getElementById("booking-phone-value");
         const preferredDate = document.getElementById("preferred-date");
+        const formRenderedAt = document.querySelector(".form-rendered-at");
 
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         preferredDate.min = tomorrow.toISOString().split("T")[0];
+        formRenderedAt.value = `${Date.now() / 1000}`;
 
         function formatCanadianPhone(value) {
             let digits = value.replace(/\D/g, "");

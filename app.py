@@ -2,6 +2,7 @@ import csv
 import os
 import re
 import smtplib
+import time
 from datetime import date, datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
@@ -55,6 +56,19 @@ BOOKING_RECORD_FIELDS = [
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 LESSON_TYPES = {"Private Lessons", "Sparring"}
 TRAINING_LOCATIONS = {"Badminton Vancouver", "CoSports", "Flexible"}
+MIN_FORM_SECONDS = 3
+RATE_LIMIT_SECONDS = 600
+RATE_LIMIT_MAX_SUBMISSIONS = 5
+RATE_LIMITS = {}
+MAX_FIELD_LENGTHS = {
+    "name": 80,
+    "first_name": 60,
+    "last_name": 60,
+    "email": 120,
+    "preferred_time": 80,
+    "player_level": 80,
+    "message": 1200,
+}
 SHOP_ITEMS = [
     {
         "name": "Kinesiology Tape",
@@ -84,6 +98,48 @@ def is_future_booking_date(value):
         return False
 
     return preferred_date > date.today()
+
+
+def client_ip():
+    return request.headers.get("X-Forwarded-For", request.remote_addr or "").split(",")[0].strip()
+
+
+def rate_limit_key(form_name):
+    return f"{form_name}:{client_ip()}"
+
+
+def is_rate_limited(form_name):
+    now = time.time()
+    key = rate_limit_key(form_name)
+    recent_submissions = [
+        submitted_at
+        for submitted_at in RATE_LIMITS.get(key, [])
+        if now - submitted_at < RATE_LIMIT_SECONDS
+    ]
+
+    if len(recent_submissions) >= RATE_LIMIT_MAX_SUBMISSIONS:
+        RATE_LIMITS[key] = recent_submissions
+        return True
+
+    recent_submissions.append(now)
+    RATE_LIMITS[key] = recent_submissions
+    return False
+
+
+def form_was_submitted_too_fast():
+    try:
+        rendered_at = float(request.form.get("form_rendered_at", "0"))
+    except ValueError:
+        return True
+
+    return time.time() - rendered_at < MIN_FORM_SECONDS
+
+
+def field_is_too_long(values):
+    return any(
+        len(values.get(field, "")) > max_length
+        for field, max_length in MAX_FIELD_LENGTHS.items()
+    )
 
 
 def send_email(subject, to_address, reply_to, body):
@@ -125,9 +181,7 @@ def create_booking_record(inquiry):
         "phone": inquiry["phone"],
         "message": inquiry["message"],
         "source": "bookings",
-        "ip_address": request.headers.get("X-Forwarded-For", request.remote_addr or "")
-        .split(",")[0]
-        .strip(),
+        "ip_address": client_ip(),
         "user_agent": request.headers.get("User-Agent", ""),
     }
 
@@ -253,6 +307,13 @@ def bookings():
         if request.form.get("website"):
             return render_template("bookings.html", booking_status="sent", booking_values={})
 
+        if form_was_submitted_too_fast() or is_rate_limited("bookings"):
+            return render_template(
+                "bookings.html",
+                booking_error="Please wait a moment before submitting again.",
+                booking_values=booking_values,
+            ), 429
+
         inquiry = {
             "first_name": request.form.get("first_name", "").strip(),
             "last_name": request.form.get("last_name", "").strip(),
@@ -268,7 +329,9 @@ def bookings():
 
         booking_error = None
 
-        if not inquiry["first_name"]:
+        if field_is_too_long(inquiry):
+            booking_error = "Please shorten your message and try again."
+        elif not inquiry["first_name"]:
             booking_error = "Please enter your first name."
         elif not EMAIL_PATTERN.match(inquiry["email"]):
             booking_error = "Please enter a valid email address."
@@ -351,6 +414,13 @@ def contact():
         if request.form.get("website"):
             return render_template("contact.html", contact_status="sent", contact_values={})
 
+        if form_was_submitted_too_fast() or is_rate_limited("contact"):
+            return render_template(
+                "contact.html",
+                contact_error="Please wait a moment before submitting again.",
+                contact_values=contact_values,
+            ), 429
+
         contact_message = {
             "name": request.form.get("name", "").strip(),
             "email": request.form.get("email", "").strip(),
@@ -360,7 +430,9 @@ def contact():
 
         contact_error = None
 
-        if not contact_message["name"]:
+        if field_is_too_long(contact_message):
+            contact_error = "Please shorten your message and try again."
+        elif not contact_message["name"]:
             contact_error = "Please enter your name."
         elif not EMAIL_PATTERN.match(contact_message["email"]):
             contact_error = "Please enter a valid email address."
