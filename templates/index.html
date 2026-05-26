@@ -17,6 +17,7 @@
     <meta property="og:image" content="{{ url_for('static', filename='logo1.png', _external=True) }}">
     <link rel="canonical" href="https://www.elevatebadminton.com/">
     <link rel="icon" href="{{ url_for('static', filename='logo1.png') }}">
+    {% include "google_tag.html" %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
