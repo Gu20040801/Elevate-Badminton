@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import re
 import smtplib
@@ -6,6 +7,8 @@ import time
 from datetime import date, datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 from uuid import uuid4
 
 from flask import Flask, render_template, request
@@ -32,6 +35,9 @@ def load_local_env():
 load_local_env()
 
 BOOKING_INBOX = "elevatebadminton99@gmail.com"
+RESEND_API_URL = "https://api.resend.com/emails"
+RESEND_FROM = os.environ.get("RESEND_FROM", "Elevate Badminton <onboarding@resend.dev>")
+RESEND_TIMEOUT_SECONDS = int(os.environ.get("RESEND_TIMEOUT_SECONDS", "8"))
 SMTP_TIMEOUT_SECONDS = int(os.environ.get("SMTP_TIMEOUT_SECONDS", "8"))
 BOOKING_RECORDS_PATH = Path(
     os.environ.get("BOOKING_RECORDS_PATH", Path(app.instance_path) / "bookings.csv")
@@ -144,6 +150,46 @@ def field_is_too_long(values):
 
 
 def send_email(subject, to_address, reply_to, body):
+    resend_api_key = os.environ.get("RESEND_API_KEY")
+
+    if resend_api_key:
+        send_resend_email(subject, to_address, reply_to, body, resend_api_key)
+        return
+
+    send_smtp_email(subject, to_address, reply_to, body)
+
+
+def send_resend_email(subject, to_address, reply_to, body, api_key):
+    payload = {
+        "from": RESEND_FROM,
+        "to": [to_address],
+        "subject": subject,
+        "text": body,
+        "reply_to": reply_to,
+    }
+    request_payload = json.dumps(payload).encode("utf-8")
+    email_request = Request(
+        RESEND_API_URL,
+        data=request_payload,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+
+    try:
+        with urlopen(email_request, timeout=RESEND_TIMEOUT_SECONDS) as response:
+            if response.status >= 400:
+                raise RuntimeError(f"Resend API returned status {response.status}.")
+    except HTTPError as error:
+        details = error.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Resend API failed with status {error.code}: {details}") from error
+    except URLError as error:
+        raise RuntimeError(f"Resend API request failed: {error.reason}") from error
+
+
+def send_smtp_email(subject, to_address, reply_to, body):
     gmail_user = os.environ.get("GMAIL_USER", BOOKING_INBOX)
     gmail_app_password = os.environ.get("GMAIL_APP_PASSWORD")
 

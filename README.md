@@ -19,12 +19,14 @@ The local server runs at `http://127.0.0.1:5050`.
 Set these in `.env` locally and in your hosting provider's environment settings:
 
 ```env
-GMAIL_USER=elevatebadminton99@gmail.com
-GMAIL_APP_PASSWORD=your-gmail-app-password
+RESEND_API_KEY=your-resend-api-key
+RESEND_FROM=Elevate Badminton <onboarding@resend.dev>
 BOOKING_RECORDS_PATH=instance/bookings.csv
 ```
 
-`GMAIL_APP_PASSWORD` must be a Gmail app password, not the normal Gmail login password.
+Production email uses Resend over HTTPS. `RESEND_FROM` can use `onboarding@resend.dev`
+for testing. For production, verify `elevatebadminton.com` in Resend and update
+`RESEND_FROM` to an address on that domain.
 
 ## Production
 
@@ -34,4 +36,4 @@ Start command:
 gunicorn app:app
 ```
 
-Booking submissions are saved to `BOOKING_RECORDS_PATH` and notification emails are sent through Gmail SMTP.
+Booking submissions are saved to `BOOKING_RECORDS_PATH` and notification emails are sent through Resend.
