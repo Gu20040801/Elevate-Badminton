@@ -11,7 +11,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from uuid import uuid4
 
-from flask import Flask, render_template, request
+from flask import Flask, Response, render_template, request
 
 app = Flask(__name__)
 
@@ -84,6 +84,7 @@ SHOP_ITEMS = [
         "image": "tape.png",
     },
 ]
+SITE_URL = "https://www.elevatebadminton.com"
 
 
 def normalize_phone(value):
@@ -339,6 +340,34 @@ def send_contact_message(contact_message):
 @app.route("/")
 def home():
     return render_template("index.html")
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    body = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            f"Sitemap: {SITE_URL}/sitemap.xml",
+            "",
+        ]
+    )
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    pages = ["", "programs", "bookings", "shop", "locations", "contact"]
+    urls = "\n".join(
+        f"    <url><loc>{SITE_URL}/{page}</loc></url>" if page else f"    <url><loc>{SITE_URL}/</loc></url>"
+        for page in pages
+    )
+    body = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{urls}
+</urlset>
+"""
+    return Response(body, mimetype="application/xml")
 
 @app.route("/programs")
 def programs():
