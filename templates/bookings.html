@@ -10,6 +10,9 @@
     >
     <link rel="icon" href="{{ url_for('static', filename='logo1.png') }}">
     {% include "google_tag.html" %}
+    {% if booking_status == "sent" %}
+        {% include "google_conversion.html" %}
+    {% endif %}
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
