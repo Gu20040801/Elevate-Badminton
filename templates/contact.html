@@ -54,16 +54,30 @@
         <section class="contact-layout">
             <section class="wechat-contact">
                 <div class="wechat-heading">
-                    <h3>WeChat</h3>
-             
-                    <p>Scan the QR code to message Elevate Badminton on WeChat.</p>
+                    <h3>Get In Touch</h3>
+
+                    <p>Scan a QR code to connect with Elevate Badminton.</p>
                 </div>
 
-                <img
-                    class="wechat-qr"
-                    src="{{ url_for('static', filename='wechat-qr.JPG') }}"
-                    alt="Elevate Badminton WeChat QR code"
-                >
+                <div class="contact-qr-grid">
+                    <article class="contact-qr-card">
+                        <h4>WeChat</h4>
+                        <img
+                            class="contact-qr"
+                            src="{{ url_for('static', filename='wechat-qr.JPG') }}"
+                            alt="Elevate Badminton WeChat QR code"
+                        >
+                    </article>
+
+                    <article class="contact-qr-card">
+                        <h4>Instagram</h4>
+                        <img
+                            class="contact-qr"
+                            src="{{ url_for('static', filename='ins.jpg') }}"
+                            alt="Elevate Badminton Instagram QR code"
+                        >
+                    </article>
+                </div>
             </section>
 
             <section class="contact-message">

@@ -719,7 +719,8 @@ body.modal-open{
     min-height:100%;
 }
 
-.wechat-heading h1{
+.wechat-heading h1,
+.wechat-heading h3{
     margin:0 0 14px;
     color:white;
     font-size:clamp(36px, 4vw, 56px);
@@ -736,9 +737,30 @@ body.modal-open{
     line-height:1.6;
 }
 
-.wechat-qr{
+.contact-qr-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:18px;
+    max-width:520px;
+}
+
+.contact-qr-card{
+    display:grid;
+    gap:12px;
+    align-content:start;
+}
+
+.contact-qr-card h4{
+    margin:0;
+    color:white;
+    font-size:18px;
+    line-height:1.2;
+    letter-spacing:0;
+}
+
+.contact-qr{
     display:block;
-    width:min(100%, 440px);
+    width:100%;
     height:auto;
     border-radius:8px;
     background:white;
@@ -1237,6 +1259,10 @@ body.modal-open{
         grid-template-columns:1fr;
     }
 
+    .contact-qr-grid{
+        max-width:560px;
+    }
+
     .contact-message{
         padding:28px;
     }
@@ -1346,6 +1372,11 @@ body.modal-open{
 
     .contact-message{
         padding:24px 18px;
+    }
+
+    .contact-qr-grid{
+        grid-template-columns:1fr;
+        max-width:320px;
     }
 
     .shop-card-copy{
